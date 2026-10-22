@@ -1,0 +1,20 @@
+# Claim: lockfree-mpmc 1p1c throughput.
+# Measured on the shared box (Intel Xeon, 8 vCPU, Linux 6.12) on 2026-10-22
+# (America/Buenos_Aires): median ≈ 30.8 M elem/s (see lockfree-mpmc/BENCH.md).
+# Threshold is 20 M/s — below the published figure, with room for noisy VMs.
+# Clearing 20 does NOT re-certify 30.8.
+
+name = "lockfree-mpmc-1p1c"
+command = """
+cargo bench --bench throughput -- --sample-size 10 --warm-up-time 1 --measurement-time 2 1p1c 2>&1 \
+  | tee /tmp/bv-bench.log \
+  | awk '/lockfree_mpmc\/1p1c/ {grab=1} grab && /thrpt:/ {print; exit}'
+"""
+metric_regex = 'thrpt:\s*\[\s*[0-9.]+\s+Melem/s\s+([0-9.]+)\s+Melem/s'
+runs = 3
+confidence = 0.95
+bootstrap_samples = 2000
+timeout_secs = 600
+
+[threshold]
+min = 20.0

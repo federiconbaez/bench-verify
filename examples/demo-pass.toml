@@ -1,0 +1,8 @@
+name = "demo-pass"
+command = "echo 'thrpt: 42.0 Melem/s'"
+metric_regex = 'thrpt:\s*([0-9.]+)'
+runs = 5
+bootstrap_samples = 500
+
+[threshold]
+min = 40.0
